@@ -37,7 +37,7 @@
 	<property name="forge.stsh" value="${build.dir}/.gradle/caches/minecraft/net/minecraftforge/forge/${forge.version}"/>
 	<property name="forge.jar" value="${forge.stsh}/forgeSrc-${forge.version}.jar"/>
 	<property name="reobf.cmd" value="${download.dir}/bon.jar"/>
-	<property name="forge.url" value="http://files.minecraftforge.net/maven/net/minecraftforge/forge/${forge.version}/forge-${forge.version}-src.zip"/>
+	<property name="forge.url" value="https://maven.minecraftforge.net/net/minecraftforge/forge/${forge.version}/forge-${forge.version}-src.zip"/>
 	
 	<!-- Classpaths -->
 	<path id="mcp.classpath">
@@ -89,10 +89,10 @@
 	
 	<!-- Dependency downloading -->
 
-	<target name="download-core" depends="properties" unless="forge.exists">
+	<target name="download-core" depends="properties">
 		<echo message="Downloading CoFHCore... "/>
-		<get src="https://github.com/CoFH/CoFHCore/archive/master.zip" dest="${download.dir}/CoFHCore.zip"/>
-		<delete dir="${download.dir}/CoFHCore-master" failonerror="false"/>
+		<get src="https://github.com/CoFH/CoFHCore-1.12-Legacy/archive/1.7.10.zip" dest="${download.dir}/CoFHCore.zip"/>
+		<delete dir="${download.dir}/CoFHCore-1.12-Legacy-1.7.10" failonerror="false"/>
 		<unzip src="${download.dir}/CoFHCore.zip" dest="${download.dir}"/>
 	</target>
 
@@ -120,12 +120,12 @@
 		<!-- End hack -->
 
 		<echo message="Downloading CoFHLib... "/>
-		<get src="https://github.com/CoFH/CoFHLib/archive/master.zip" dest="${download.dir}/CoFHLib.zip"/>
+		<get src="https://github.com/CoFH/CoFHLib-1.7.10-Legacy/archive/1.7.10.zip" dest="${download.dir}/CoFHLib.zip"/>
 		<!-- Begin hack -->
 		<unzip src="${download.dir}/CoFHLib.zip" dest="${download.dir}"/>
 		<delete dir="${compile.dir}" failonerror="false"/>
 		<mkdir dir="${compile.dir}"/>
-		<javac srcdir="${download.dir}/CoFHLib-master/src/main/java" destdir="${compile.dir}"
+		<javac srcdir="${download.dir}/CoFHLib-1.7.10-Legacy-1.7.10/src/main/java" destdir="${compile.dir}"
 			target="1.7" source="1.7"
 			classpathref="mcp.classpath" debug="true" debuglevel="lines,source" includeAntRuntime="false">
 			<include name="**/*.java"/>
@@ -141,7 +141,7 @@
 		<!-- Begin hack -->
 		<delete dir="${compile.dir}" failonerror="false"/>
 		<mkdir dir="${compile.dir}"/>
-		<javac srcdir="${download.dir}/CoFHCore-master/src/main/java" destdir="${compile.dir}"
+		<javac srcdir="${download.dir}/CoFHCore-1.12-Legacy-1.7.10/src/main/java" destdir="${compile.dir}"
 			target="1.7" source="1.7"
 			classpathref="mcp.classpath" debug="true" debuglevel="lines,source" includeAntRuntime="false">
 			<include name="**/*.java"/>
@@ -155,7 +155,8 @@
 		<!-- End hack -->
 		
 		<echo message="Downloading AppEng API..." />
-		<get src="http://ae-mod.info/builds/appliedenergistics2-rv1-stable-1-dev.jar" dest="${download.dir}/AppEng.jar"/>
+		<!-- Hopefully this version is close enough -->
+		<get src="https://github.com/AppliedEnergistics/Applied-Energistics-2/releases/download/rv2.beta.1/appliedenergistics2-rv2-beta-1-dev.jar" dest="${download.dir}/AppEng.jar"/>
 
 		<echo message="Downloading Forestry API... "/>
 		<get src="https://github.com/ForestryMC/ForestryAPI/archive/53f418f4a4808272ec18bd224dbd5c2c8ea8cfed.zip" dest="${download.dir}/ForestryAPI.zip"/>
@@ -199,7 +200,7 @@
 	
 	<macrodef name="move-transformers"><sequential>
 		
-		<copy file="${download.dir}/CoFHCore-master/src/main/resources/CoFH_at.cfg" tofile="${transformers.dir}/CoFH_at.cfg"/>
+		<copy file="${download.dir}/CoFHCore-1.12-Legacy-1.7.10/src/main/resources/CoFH_at.cfg" tofile="${transformers.dir}/CoFH_at.cfg"/>
 		<copy file="${resources.dir}/META-INF/MFR_at.cfg" tofile="${transformers.dir}/MFR_at.cfg"/>
 		
 	</sequential></macrodef>
@@ -304,6 +305,8 @@
 		<delete dir="${forge.dir}/src/main/java" failonerror="false"/>
 		<delete dir="${build.dir}/.gradle/caches/minecraft/net/minecraftforge/forge/${forge.version}/srgs" failonerror="false"/>
 		
+		<copy file="${build.dir}/../overrides/forge/build.gradle" toDir="${forge.dir}/"/>
+
 		<!-- Change executables' permissions -->
 		<chmod file="${forge.dir}/gradlew" perm="+x"/>
 
